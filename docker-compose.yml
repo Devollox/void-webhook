@@ -1,0 +1,22 @@
+services:
+  backend-webhook:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:8080:8080'
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command:
+      - tunnel
+      - --no-autoupdate
+      - --protocol
+      - http2
+      - run
+      - --token
+      - ${TUNNEL_TOKEN}
+    depends_on:
+      - backend-webhook
