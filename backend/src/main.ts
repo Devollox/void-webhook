@@ -12,14 +12,19 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: 'http://localhost:3000',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,QUERY',
+    origin: [
+      'http://localhost:3000',
+      'https://voidpresence.com',
+      'https://api.voidpresence.com',
+      'https://www.voidpresence.com',
+    ],
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     credentials: true,
   });
 
   app.setGlobalPrefix('webhook');
 
-  await app.listen(process.env.PORT ?? 8080);
+  await app.listen(process.env.PORT ?? 8080, '0.0.0.0');
 }
 
 void bootstrap();

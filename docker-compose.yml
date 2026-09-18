@@ -4,19 +4,25 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     restart: unless-stopped
-    ports:
-      - '127.0.0.1:8080:8080'
+    env_file:
+      - .env
+    expose:
+      - '8080'
+    networks:
+      - app
 
-  cloudflared:
-    image: cloudflare/cloudflared:latest
+  nginx:
+    image: nginx:1.27-alpine
     restart: unless-stopped
-    command:
-      - tunnel
-      - --no-autoupdate
-      - --protocol
-      - http2
-      - run
-      - --token
-      - ${TUNNEL_TOKEN}
     depends_on:
       - backend-webhook
+    ports:
+      - '80:80'
+    volumes:
+      - ./nginx/webhook.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge
