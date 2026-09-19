@@ -18,7 +18,16 @@ async function bootstrap() {
       'https://api.voidpresence.com',
       'https://www.voidpresence.com',
     ],
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    methods: [
+      'GET',
+      'HEAD',
+      'QUERY',
+      'PUT',
+      'PATCH',
+      'POST',
+      'DELETE',
+      'OPTIONS',
+    ],
     credentials: true,
   });
 
