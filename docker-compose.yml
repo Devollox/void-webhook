@@ -1,4 +1,19 @@
 services:
+  frontend-webhook:
+    image: void-webhook-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: build
+    volumes:
+      - frontend_dist:/frontend_dist
+    command:
+      - sh
+      - -c
+      - rm -rf /frontend_dist/* && cp -r /app/dist/. /frontend_dist/ && echo done
+    networks:
+      - app
+
   backend-webhook:
     image: void-webhook-backend-webhook:latest
     build:
@@ -17,6 +32,7 @@ services:
     restart: unless-stopped
     depends_on:
       - backend-webhook
+      - frontend-webhook
     ports:
       - '80:80'
       - '443:443'
@@ -25,8 +41,12 @@ services:
       - ./nginx/webhook.conf:/etc/nginx/conf.d/default.conf:ro
       - ./certbot/www:/var/www/certbot:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
+      - frontend_dist:/var/www/frontend:ro
     networks:
       - app
+
+volumes:
+  frontend_dist:
 
 networks:
   app:
