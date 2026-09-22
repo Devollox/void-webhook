@@ -15,7 +15,7 @@ services:
       - app
 
   backend-webhook:
-    image: void-webhook-backend-webhook:latest
+    image: void-webhook-backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
