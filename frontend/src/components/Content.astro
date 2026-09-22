@@ -1,0 +1,77 @@
+---
+import "../styles/global.css"
+---
+
+<main class="h-screen w-screen overflow-y-auto scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+
+		<section class="flex items-center justify-center mt-20 h-[120px] max-830:mt-[110px] max-440:mt-[70px] max-440:mb-20">
+			<div class="max-w-[1400px] w-full mx-auto px-[var(--section-padding-desktop)] max-830:px-[var(--section-padding-mobile)] flex items-center justify-center">
+				<div class="flex flex-col items-center gap-2 w-full">
+					<h1 class="text-[#f1f1f1] m-0 mb-2 text-5xl max-830:text-[36px] font-bold text-center leading-tight">
+						Void Presence Webhook
+					</h1>
+					<p class="text-[15px] max-830:text-[13px] text-[#95989d] m-0 max-w-[520px] text-center">
+						Receive and process external events asynchronously via a single webhook endpoint.
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="px-[var(--section-padding-desktop)] pt-8 max-md:px-[var(--section-padding-mobile)] max-md:pt-5">
+			<div class="max-w-[1400px] mx-auto">
+				<div class="w-full">
+					<div class="grid gap-5 mb-5" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+
+						<div class="w-full box-border flex flex-col bg-[rgba(23,23,23,0.9)] border border-[rgba(255,255,255,0.04)] rounded-2xl p-[14px_16px] ">
+							<h4 class="text-[#f1f1f1] m-0 mb-1 text-[13px] font-semibold">Overview</h4>
+							<p class="text-[#a1a1aa] m-0 text-[13px] leading-tight">
+								This service exposes a single <code class="text-[#e4e4e7] bg-[rgba(255,255,255,0.06)] px-1 py-px rounded text-[12px]">POST /webhook</code> endpoint that accepts incoming events from any external service.
+							</p>
+							<p class="text-[#a1a1aa] m-0 text-[13px] leading-tight">
+								Each request is validated, persisted to PostgreSQL, and published to RabbitMQ for async processing.
+							</p>
+						</div>
+
+						<div class="w-full box-border flex flex-col bg-[rgba(23,23,23,0.9)] border border-[rgba(255,255,255,0.04)] rounded-2xl p-[14px_16px]">
+							<h4 class="text-[#f1f1f1] m-0 mb-1 text-[13px] font-semibold">How it works</h4>
+							<p class="text-[#a1a1aa] m-0 text-[13px] leading-tight">
+								Incoming events are queued via RabbitMQ and handled by a background worker independently of the HTTP response.
+							</p>
+							<p class="text-[#a1a1aa] m-0 text-[13px] leading-tight">
+								The API responds immediately with a success so the sender is never blocked waiting for processing to finish.
+							</p>
+						</div>
+
+						<div class="w-full box-border flex flex-col bg-[rgba(23,23,23,0.9)] border border-[rgba(255,255,255,0.04)] rounded-2xl p-[14px_16px]">
+							<h4 class="text-[#f1f1f1] m-0 mb-1 text-[13px] font-semibold">Setup</h4>
+							<p class="text-[#a1a1aa] m-0 text-[13px] leading-tight">
+								Point any external service to <code class="text-[#e4e4e7] bg-[rgba(255,255,255,0.06)] px-1 py-px rounded text-[12px]">/webhook</code> and start sending POST requests with a JSON payload.
+							</p>
+							<p class="text-[#a1a1aa] m-0 mb-4 text-[13px] leading-tight">
+								The full source, environment variables, and Docker setup are available on GitHub.
+							</p>
+							<a
+								href="https://github.com/Devollox/void-webhook"
+								target="_blank"
+								rel="noreferrer"
+								class="mt-auto w-full text-white text-center bg-[#272727] border border-[rgba(255,255,255,0.1)] rounded-xl px-4 py-[10px] text-[13px] font-medium no-underline transition-all duration-200 block hover:bg-[rgba(255,255,255,0.15)] hover:border-[rgba(255,255,255,0.2)] hover:-translate-y-px hover:shadow-[0_4px_12px_rgba(0,0,0,0.3)]"
+							>
+								View source on GitHub
+							</a>
+						</div>
+
+						<div class="w-full box-border flex flex-col bg-[rgba(23,23,23,0.9)] border border-[rgba(255,255,255,0.04)] rounded-2xl p-[14px_16px]">
+							<h4 class="text-[#f1f1f1] m-0 mb-1 text-[13px] font-semibold">Usage notes</h4>
+							<p class="text-[#a1a1aa] m-0 text-[13px] leading-tight">
+								Redis is used for rate limiting and temporary caching — avoid flooding the endpoint with high-frequency requests.
+							</p>
+							<p class="text-[#a1a1aa] m-0 text-[13px] leading-tight">
+								For heavy integrations, pre-process and batch events on your side before forwarding them here.
+							</p>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>

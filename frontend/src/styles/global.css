@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+@custom-variant max-830 (@media (max-width: 830px));
+@custom-variant max-440 (@media (max-width: 440px));
+
 :root {
 	--background: #000000;
 	--foreground: #e3e3e3;
