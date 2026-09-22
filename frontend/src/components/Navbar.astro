@@ -1,0 +1,64 @@
+---
+import "../styles/global.css"
+---
+
+<header class="fixed top-0 inset-x-0 z-40 flex justify-center bg-black/65 backdrop-blur-md">
+  <div class="max-w-[1480px] w-full px-4  md:px-8 lg:px-[128px] py-[10px] flex items-center justify-between gap-[12px] sm:gap-[14px] lg:gap-[18px]">
+    <a
+      href={'https://voidpresence.com'}
+      class="flex items-center gap-[10px] no-underline h-[35px]"
+    >
+      <div class="w-8 h-8 rounded-lg bg-[#0a0a0ad9] border border-[#ffffff1f] flex items-center justify-center text-[11px] font-semibold tracking-[0.16em] text-[#f1f1f1]">
+        vP
+      </div>
+      <div class="flex flex-col">
+        <span class="flex text-[14px] font-semibold text-[#f1f1f1]">Void Presence</span>
+        <span class="text-[11px] text-[#a1a1aa] hidden lg:block">Discord Rich Presence manager</span>
+      </div>
+    </a>
+
+    <nav class="flex items-center gap-[6px]">
+      <a
+        class="relative h-[43px] px-3 py-[12px] text-[14px] text-[#888888] no-underline rounded-[3px] bg-transparent transition-[color,background-color] duration-150 font-medium whitespace-nowrap cursor-pointer hover:text-white flex items-center gap-1 max-md:px-[8px]"
+        target="_blank"
+        href="https://discord.gg/xHJrCNA8y5"
+        rel="noreferrer"
+      >
+        Discord
+				<span class="w-[0px] rounded-full" />
+        <svg
+          aria-hidden="true"
+          class="absolute top-[7px] right-[4px] fill-[#888888]"
+          height="7"
+          viewBox="0 0 6 6"
+          width="7"
+        >
+          <path
+            d="M1.25215 5.54731L0.622742 4.9179L3.78169 1.75597H1.3834L1.38936 0.890915H5.27615V4.78069H4.40513L4.41109 2.38538L1.25215 5.54731Z"
+          />
+        </svg>
+      </a>
+
+      <a
+        class="relative px-3 py-[12px] text-[14px] text-[#888888] no-underline rounded-[3px] bg-transparent transition-[color,background-color] duration-150 font-medium whitespace-nowrap cursor-pointer hover:text-white flex items-center gap-1 max-md:px-[8px]"
+        target="_blank"
+        href="https://github.com/Devollox/void-presence"
+        rel="noreferrer"
+      >
+        GitHub
+				<span class="w-[0px] rounded-full" />
+        <svg
+          aria-hidden="true"
+          class="absolute top-[7px] right-[4px] fill-[#888888]"
+          height="7"
+          viewBox="0 0 6 6"
+          width="7"
+        >
+          <path
+            d="M1.25215 5.54731L0.622742 4.9179L3.78169 1.75597H1.3834L1.38936 0.890915H5.27615V4.78069H4.40513L4.41109 2.38538L1.25215 5.54731Z"
+          />
+        </svg>
+      </a>
+    </nav>
+  </div>
+</header>
