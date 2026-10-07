@@ -22,6 +22,11 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/void_webhook?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
     expose:
       - '8080'
     networks:
@@ -45,8 +50,26 @@ services:
     networks:
       - app
 
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: void_webhook
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d void_webhook"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app
+
 volumes:
   frontend_dist:
+  postgres_data:
 
 networks:
   app:

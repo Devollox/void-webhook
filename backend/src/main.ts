@@ -3,6 +3,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { fastifyRawBody } from 'fastify-raw-body';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -10,6 +11,13 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
+
+  await app.register(fastifyRawBody, {
+    field: 'rawBody',
+    global: false,
+    encoding: 'utf8',
+    runFirst: true,
+  });
 
   app.enableCors({
     origin: [
