@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { GithubEventTypeSchema } from './create-subscription.schema';
 
 export const UpdateSubscriptionSchema = z.object({
+  githubOwner: z.string().trim().min(1).max(100).optional(),
+  githubRepo: z.string().trim().min(1).max(100).optional(),
   events: z.array(GithubEventTypeSchema).min(1).optional(),
   discordWebhookUrl: z
     .string()
