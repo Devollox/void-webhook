@@ -20,12 +20,12 @@ The root page will contain a small Astro landing page explaining what the webhoo
 
 ```text
 /         → Astro landing page
-/webhook  → NestJS webhook endpoint
+/webhooks  → NestJS webhook endpoint
 ```
 
 ## How It Will Work
 
-1. An external service sends a request to `/webhook`.
+1. An external service sends a request to `/webhooks`.
 2. NestJS validates the request and its payload.
 3. The event is saved to PostgreSQL through Prisma.
 4. The event is published to RabbitMQ.

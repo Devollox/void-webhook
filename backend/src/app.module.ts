@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { BullModule } from '@nestjs/bull';
 import { ZodValidationPipe } from 'nestjs-zod';
 import configuration from './config/configuration';
 import { DatabaseModule } from './database/database.module';
 import { SubscriptionModule } from './modules/subscription/subscription.module';
 import { HealthModule } from './modules/health/health.module';
 import { ApiKeyGuard } from './common/guards/api-key.guard';
+import { WebhooksModule } from './modules/webhooks/webhooks.module';
 
 @Module({
   imports: [
@@ -14,9 +16,16 @@ import { ApiKeyGuard } from './common/guards/api-key.guard';
       isGlobal: true,
       load: [configuration],
     }),
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        redis: config.get('REDIS_URL', 'redis://redis:6379'),
+      }),
+    }),
     DatabaseModule,
     SubscriptionModule,
     HealthModule,
+    WebhooksModule,
   ],
   providers: [
     {
@@ -28,5 +37,6 @@ import { ApiKeyGuard } from './common/guards/api-key.guard';
       useClass: ApiKeyGuard,
     },
   ],
+  controllers: [],
 })
 export class AppModule {}

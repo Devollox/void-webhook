@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import {
-  GithubEventType,
-  Subscription,
-} from '../../../generated/prisma/client';
+import { Subscription } from '../../../generated/prisma/client';
 import { PrismaService } from '../../database/prisma.service';
-import { CreateSubscriptionInput } from './dto/create-subscription.schema';
+import {
+  CreateSubscriptionInput,
+  GithubEventType,
+} from './dto/create-subscription.schema';
 import { UpdateSubscriptionInput } from './dto/update-subscription.schema';
 
 @Injectable()

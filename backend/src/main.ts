@@ -14,7 +14,7 @@ async function bootstrap() {
 
   await app.register(fastifyRawBody, {
     field: 'rawBody',
-    global: false,
+    global: true,
     encoding: 'utf8',
     runFirst: true,
   });

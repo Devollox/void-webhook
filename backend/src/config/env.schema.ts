@@ -9,6 +9,9 @@ export const envSchema = z.object({
   GITHUB_WEBHOOK_SECRET: z.string().min(16),
   DISCORD_USERNAME: z.string().default('Void Webhook'),
   API_KEY: z.string().min(16),
+  RABBITMQ_URL: z.string().default('amqp://void:void@rabbitmq:5672'),
+  REDIS_URL: z.string().default('redis://redis:6379'),
+  DISCORD_PROXY_URL: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

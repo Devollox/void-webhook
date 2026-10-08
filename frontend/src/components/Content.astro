@@ -23,7 +23,7 @@ import "../styles/global.css"
 						<div class="w-full box-border flex flex-col bg-[rgba(23,23,23,0.9)] border border-[rgba(255,255,255,0.04)] rounded-2xl p-[14px_16px] ">
 							<h4 class="text-[#f1f1f1] m-0 mb-1 text-[13px] font-semibold">Overview</h4>
 							<p class="text-[#a1a1aa] m-0 text-[13px] leading-tight">
-								This service exposes a single <code class="text-[#e4e4e7] bg-[rgba(255,255,255,0.06)] px-1 py-px rounded text-[12px]">POST /webhook</code> endpoint that accepts incoming events from any external service.
+								This service exposes a single <code class="text-[#e4e4e7] bg-[rgba(255,255,255,0.06)] px-1 py-px rounded text-[12px]">POST /webhooks</code> endpoint that accepts incoming events from any external service.
 							</p>
 							<p class="text-[#a1a1aa] m-0 text-[13px] leading-tight">
 								Each request is validated, persisted to PostgreSQL, and published to RabbitMQ for async processing.
@@ -43,7 +43,7 @@ import "../styles/global.css"
 						<div class="w-full box-border flex flex-col bg-[rgba(23,23,23,0.9)] border border-[rgba(255,255,255,0.04)] rounded-2xl p-[14px_16px]">
 							<h4 class="text-[#f1f1f1] m-0 mb-1 text-[13px] font-semibold">Setup</h4>
 							<p class="text-[#a1a1aa] m-0 text-[13px] leading-tight">
-								Point any external service to <code class="text-[#e4e4e7] bg-[rgba(255,255,255,0.06)] px-1 py-px rounded text-[12px]">/webhook</code> and start sending POST requests with a JSON payload.
+								Point any external service to <code class="text-[#e4e4e7] bg-[rgba(255,255,255,0.06)] px-1 py-px rounded text-[12px]">/webhooks</code> and start sending POST requests with a JSON payload.
 							</p>
 							<p class="text-[#a1a1aa] m-0 mb-4 text-[13px] leading-tight">
 								The full source, environment variables, and Docker setup are available on GitHub.

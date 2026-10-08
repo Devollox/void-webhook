@@ -24,3 +24,5 @@ export type CreateSubscriptionInput = z.infer<typeof CreateSubscriptionSchema>;
 export class CreateSubscriptionDto extends createZodDto(
   CreateSubscriptionSchema,
 ) {}
+
+export type GithubEventType = z.infer<typeof GithubEventTypeSchema>;
