@@ -1,0 +1,147 @@
+---
+const endpoints = [
+  { id: 'health', method: 'GET', path: '/health', title: 'Health check', description: 'Returns service and database status.', auth: false },
+  { id: 'webhooks-github', method: 'POST', path: '/webhooks/github', title: 'GitHub webhook receiver', description: 'Receives push, release, pull_request and issues events from GitHub. Verifies HMAC-SHA256 signature.', auth: false },
+  { id: 'subscriptions-list', method: 'GET', path: '/subscriptions', title: 'List subscriptions', description: 'Returns all active subscriptions ordered by creation date.', auth: true },
+  { id: 'subscriptions-create', method: 'POST', path: '/subscriptions', title: 'Create subscription', description: 'Subscribe a GitHub repo to a Discord channel for selected event types.', auth: true },
+  { id: 'subscriptions-get', method: 'GET', path: '/subscriptions/:id', title: 'Get subscription', description: 'Returns a single subscription by ID.', auth: true },
+  { id: 'subscriptions-update', method: 'PATCH', path: '/subscriptions/:id', title: 'Update subscription', description: 'Update events, Discord webhook URL, branch filter or enabled state.', auth: true },
+  { id: 'subscriptions-disable', method: 'PATCH', path: '/subscriptions/:id/disable', title: 'Disable subscription', description: 'Disables a subscription without deleting it.', auth: true },
+  { id: 'subscriptions-delete', method: 'DELETE', path: '/subscriptions/:id', title: 'Delete subscription', description: 'Permanently removes a subscription.', auth: true },
+]
+
+const dotClass: Record<string, string> = {
+  GET: 'dot-stable', POST: 'dot-nightly', PATCH: 'dot-prerelease', DELETE: 'dot-broken',
+}
+---
+
+<style>
+  .api-path { font-feature-settings: 'tnum' 1; }
+  .el-ver    { font-feature-settings: 'tnum' 1; letter-spacing: -0.02em; }
+  .dot       { box-shadow: 0 0 6px currentColor; }
+
+  .dot-stable     { background: #22c55e; }
+  .dot-nightly    { background: #a855f7; animation: pulse 1.5s infinite; }
+  .dot-prerelease { background: #eab308; animation: pulse 1.5s infinite; }
+  .dot-broken     { background: #ef4444; animation: pulse 1.5s infinite; }
+  .dot-eol        { background: #6b7280; }
+
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.4; } }
+
+  #api-search::placeholder { color: hsla(0,0%,100%,.3); }
+</style>
+
+<section class="max-md:px-[var(--section-padding-mobile)] pb-16">
+  <div class="max-w-[1400px] mx-auto flex flex-col gap-5">
+    <form class="flex items-center gap-3 bg-[hsla(0,0%,12%,.9)] border border-[hsla(0,0%,100%,.06)] rounded-2xl px-4 py-3 h-[42px]" onsubmit="return false">
+      <svg class="w-4 h-4 text-[hsla(0,0%,100%,.4)] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input
+        id="api-search"
+        type="text"
+        placeholder="Search by path, title or description..."
+        name="q"
+        class="flex-1 bg-transparent border-none outline-none text-[14px] text-[#f1f1f1]"
+      />
+      <button id="api-search-clear" type="button" style="display:none"
+        class="text-[hsla(0,0%,100%,.4)] hover:text-[#f1f1f1] hover:bg-[hsla(0,0%,100%,.08)] p-1 rounded cursor-pointer transition-colors border-none bg-transparent flex items-center justify-center">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </form>
+
+    <div class="bg-[hsla(0,0%,12%,.6)] rounded-2xl px-3 py-3 text-[14px] text-[#f1f1f1] h-[43px]">
+      <span id="api-count">{endpoints.length} endpoints found</span>
+    </div>
+
+    <div class="relative block rounded-2xl overflow-hidden bg-[hsla(0,0%,10%,.9)] border border-[hsla(0,0%,100%,.06)]">
+      <div class="flex flex-col h-full p-5 gap-4">
+
+        <div class="flex items-center justify-between">
+          <h3 class="text-[16px] font-semibold text-[#f1f1f1] m-0">API endpoints</h3>
+          <div class="flex bg-[hsla(0,0%,8%,.9)] border border-[hsla(0,0%,100%,.08)] rounded-full px-3 py-[3px]">
+            <span class="text-[12px] font-semibold text-[#e4e4e7]">v1</span>
+          </div>
+        </div>
+
+        <ul class="list-none m-0 p-0 flex flex-col gap-[10px]" id="api-list">
+          {endpoints.map((ep) => (
+            <li
+              class="rounded-xl overflow-hidden border border-[#ffffff10] transition-all duration-150 hover:-translate-y-px hover:border-[#ffffff20]"
+              data-path={ep.path.toLowerCase()}
+              data-title={ep.title.toLowerCase()}
+              data-desc={ep.description.toLowerCase()}
+              data-method={ep.method.toLowerCase()}
+            >
+              <div class="flex flex-col gap-2 px-3 pt-3 pb-[6px] text-inherit no-underline">
+                <div class="flex items-start justify-between gap-[10px]">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="api-path text-[13px] font-semibold text-[#f1f1f1]">{ep.path}</span>
+                      <span class="text-[10px] font-bold uppercase tracking-[0.1em] px-[6px] py-[3px] rounded-md text-[#f1f1f1] bg-[hsla(0,0%,100%,.1)] border border-[hsla(0,0%,100%,.1)]">
+                        {ep.method}
+                      </span>
+                    </div>
+                  </div>
+                  <span class="text-[11px] text-[hsla(0,0%,100%,.6)] whitespace-nowrap font-medium shrink-0">
+                    {ep.auth ? 'Auth required' : 'Public'}
+                  </span>
+                </div>
+                <div class="flex items-center gap-3 flex-wrap pt-1 border-t border-[hsla(0,0%,100%,.05)]">
+                  <div class="flex items-center gap-[6px]">
+                    <div class="flex items-center">
+                      <span class={`dot w-[6px] h-[6px] rounded-full shrink-0 ${dotClass[ep.method] ?? 'dot-eol'}`} />
+                    </div>
+                    <span class="el-ver text-[10px] font-semibold text-[hsla(0,0%,100%,.85)]">{ep.title}</span>
+                  </div>
+                  <span class="text-[11px] text-[hsla(0,0%,100%,.65)] font-medium">{ep.description}</span>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <div id="api-empty" style="display:none" class="py-8 text-center text-[13px] text-[hsla(0,0%,100%,.3)]">
+          No endpoints match your search
+        </div>
+
+        <p class="border-t border-[#ffffff0f] pt-[6px] text-[#a1a1aa] m-0 text-[13px]">
+          All endpoints respond with JSON. Endpoints marked Auth required need an <code class="text-[#e4e4e7] bg-[hsla(0,0%,100%,.06)] px-1 py-px rounded text-[12px]">x-api-key</code> header.
+        </p>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  const input = document.getElementById('api-search') as HTMLInputElement
+  const clearBtn = document.getElementById('api-search-clear') as HTMLButtonElement
+  const countEl = document.getElementById('api-count') as HTMLElement
+  const items = document.querySelectorAll<HTMLElement>('#api-list li')
+  const emptyEl = document.getElementById('api-empty') as HTMLElement
+  const total = items.length
+
+  function filter(q: string) {
+    const term = q.toLowerCase().trim()
+    let visible = 0
+    items.forEach(item => {
+      const match = !term ||
+        item.dataset.path?.includes(term) ||
+        item.dataset.title?.includes(term) ||
+        item.dataset.desc?.includes(term) ||
+        item.dataset.method?.includes(term)
+      item.style.display = match ? '' : 'none'
+      if (match) visible++
+    })
+    countEl.textContent = term ? `${visible} endpoints found (of ${total})` : `${total} endpoints found`
+    emptyEl.style.display = visible > 0 ? 'none' : 'block'
+    clearBtn.style.display = term ? 'flex' : 'none'
+  }
+
+  input.addEventListener('input', () => filter(input.value))
+  clearBtn.addEventListener('click', () => { input.value = ''; filter(''); input.focus() })
+</script>
