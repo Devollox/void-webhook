@@ -24,13 +24,19 @@ services:
       - .env
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/void_webhook?schema=public
+      - REDIS_URL=redis://redis:6379
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     expose:
       - '8080'
     networks:
       - app
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
 
   nginx:
     image: nginx:1.27-alpine
@@ -60,12 +66,39 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d void_webhook"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d void_webhook']
       interval: 5s
       timeout: 5s
       retries: 10
     networks:
       - app
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --maxmemory 5mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app
+
+  # rabbitmq:
+  #   image: rabbitmq:3-alpine
+  #   restart: unless-stopped
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: void
+  #     RABBITMQ_DEFAULT_PASS: void
+  #     RABBITMQ_DEFAULT_VHOST: /
+  #   healthcheck:
+  #     test: ['CMD', 'rabbitmq-diagnostics', 'ping']
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 10
+  #   networks:
+  #     - app
 
 volumes:
   frontend_dist:
